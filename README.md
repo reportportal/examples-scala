@@ -1,5 +1,5 @@
 # examples-scala
-A project with scala tests to show how they works with Report Portal.
+A project with scala tests to show how they work with Report Portal.
 ## Known issues
 * Logging into Report Portal does not work for scalatest. Scalatest uses internal 
 queue to publish test events, such as "execution start", "test start", "test finish".
