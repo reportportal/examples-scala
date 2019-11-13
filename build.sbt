@@ -2,7 +2,7 @@ import sbt.Keys.testOptions
 
 ThisBuild / name := "examples-scala"
 ThisBuild / organization := "com.epam.reportportal"
-ThisBuild / scalaVersion := "2.11.12"
+ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / licenses := Seq("Apache-2.0" -> url("https://opensource.org/licenses/Apache-2.0"))
 
 lazy val dependencies =
