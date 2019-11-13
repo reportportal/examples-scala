@@ -1,9 +1,9 @@
-package com.epam.reportportal.example.scalatest.logback
+package com.epam.reportportal.example.scala
 
 import java.io.File
 
-import com.google.common.io.BaseEncoding
 import org.slf4j.LoggerFactory
+import rp.com.google.common.io.BaseEncoding
 
 object LoggingUtils {
   private val LOGGER = LoggerFactory.getLogger("binary_data_logger")

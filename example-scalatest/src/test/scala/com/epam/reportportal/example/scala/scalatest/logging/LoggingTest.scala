@@ -1,8 +1,8 @@
-package com.epam.reportportal.example.scalatest.logback.logging
+package com.epam.reportportal.example.scala.scalatest.logging
 
 import java.io.File
 
-import com.epam.reportportal.example.scalatest.logback.LoggingUtils
+import com.epam.reportportal.example.scala.LoggingUtils
 import com.google.common.io.{Files, Resources}
 import org.scalatest.{FunSuite, Matchers}
 
