@@ -1,3 +1,5 @@
+import sbt.Keys.testOptions
+
 ThisBuild / name := "examples-scala"
 ThisBuild / organization := "com.epam.reportportal"
 ThisBuild / scalaVersion := "2.11.12"
@@ -6,20 +8,33 @@ ThisBuild / licenses := Seq("Apache-2.0" -> url("https://opensource.org/licenses
 lazy val dependencies =
   new {
     val scalatestVersion = "3.0.8"
-    val scalaAgentVersion = "5.0.1"
+    val scalatestAgentVersion = "5.0.1"
     val loggerLogbackVersion = "5.0.0-BETA-4"
     val logbackVersion = "1.2.3"
     val slf4jVersion = "1.7.25"
+    val seleniumVersion = "2.3.1"
+    val selenideVersion = "5.2.8"
+    val junitVersion = "4.12"
+    val cucumberVersion = "4.7.1"
+    val cucumber4AgentVersion = "5.0.0-BETA-1"
+    val junitInterfaceVersion = "0.11"
+
+    val loggerLogback = "com.epam.reportportal" % "logger-java-logback" % loggerLogbackVersion
+    val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
+    val slf4j = "org.slf4j" % "jul-to-slf4j" % slf4jVersion
 
     val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % "test"
-    val scalaAgent = "com.epam.reportportal" %% "agent-scala-scalatest" % scalaAgentVersion % "test"
-    val loggerLogback = "com.epam.reportportal" % "logger-java-logback" % loggerLogbackVersion % "test"
-    val logback = "ch.qos.logback" % "logback-classic" % logbackVersion % "test"
-    val slf4j = "org.slf4j" % "jul-to-slf4j" % slf4jVersion % "test"
+    val scalatestAgent = "com.epam.reportportal" %% "agent-scala-scalatest" % scalatestAgentVersion % "test"
+
+    val selenium = "org.seleniumhq.selenium" % "selenium-chrome-driver" % seleniumVersion
+    val selenide = "com.codeborne" % "selenide" % selenideVersion
+    val cucumberJava = "io.cucumber" % "cucumber-java" % cucumberVersion
+    val cucumberJunit = "io.cucumber" % "cucumber-junit" % cucumberVersion % "test"
+    val cucumberAgent = "com.epam.reportportal" % "agent-java-cucumber4" % cucumber4AgentVersion % "test"
+    val junitInterface = "com.novocode" % "junit-interface" % junitInterfaceVersion % "test"
   }
 
 lazy val commonDependencies = Seq(
-  dependencies.scalaAgent,
   dependencies.loggerLogback,
   dependencies.logback,
   dependencies.slf4j
@@ -34,26 +49,51 @@ lazy val commonResolvers = Seq(
 lazy val commonSettings = Seq(
   javacOptions ++= javaCompilerOptions,
   resolvers ++= commonResolvers,
-  testOptions ++= Seq(
-    Tests.Argument(TestFrameworks.ScalaTest, "-C", "com.epam.reportportal.scalatest.RPReporter")
-  ),
   parallelExecution := false,
   logBuffered := false
 )
 
-lazy val exampleScalatest = (project in file("example-scalatest"))
+lazy val exampleCommon = project
+  .in(file("example-common"))
+  .settings(
+    name := "example-common",
+    commonSettings,
+    libraryDependencies ++= commonDependencies
+  )
+
+lazy val exampleScalatest = project
+  .in(file("example-scalatest"))
   .settings(
     name := "example-scalatest",
     commonSettings,
-    libraryDependencies ++= commonDependencies ++ Seq(dependencies.scalatest)
-  )
+    libraryDependencies ++= commonDependencies ++
+      Seq(
+        dependencies.scalatest,
+        dependencies.scalatestAgent
+      ),
+    testOptions ++= Seq(
+      Tests.Argument(TestFrameworks.ScalaTest, "-C", "com.epam.reportportal.scalatest.RPReporter")
+    )
+  ).dependsOn(exampleCommon)
 
-lazy val exampleCucumber = (project in file("example-cucumber"))
+lazy val exampleCucumber = project
+  .in(file("example-cucumber"))
   .settings(
     name := "example-cucumber",
     commonSettings,
-    libraryDependencies ++= commonDependencies ++ Seq(dependencies.scalatest)
-  )
+    libraryDependencies ++= commonDependencies ++
+      Seq(
+        dependencies.selenium,
+        dependencies.selenide,
+        dependencies.cucumberJava,
+        dependencies.cucumberJunit,
+        dependencies.cucumberAgent,
+        dependencies.junitInterface
+      ),
+    testOptions ++= Seq(
+      Tests.Argument(TestFrameworks.JUnit, "-v")
+    )
+  ).dependsOn(exampleCommon)
 
 lazy val examplesScala = project
   .in(file("."))
@@ -62,6 +102,7 @@ lazy val examplesScala = project
     commonSettings
   )
   .aggregate(
+    exampleCommon,
     exampleScalatest,
     exampleCucumber
   )
