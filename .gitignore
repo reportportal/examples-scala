@@ -63,5 +63,3 @@ fabric.properties
 *.iml
 modules.xml
 *.ipr
-
-/src/main/resources/reportportal.properties
