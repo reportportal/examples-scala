@@ -8,8 +8,8 @@ ThisBuild / licenses := Seq("Apache-2.0" -> url("https://opensource.org/licenses
 lazy val dependencies =
   new {
     val scalatestVersion = "3.0.8"
-    val scalatestAgentVersion = "5.0.1"
-    val loggerLogbackVersion = "5.0.0-BETA-4"
+    val scalatestAgentVersion = "5.0.3"
+    val loggerLogbackVersion = "5.0.0-BETA-8"
     val logbackVersion = "1.2.3"
     val slf4jVersion = "1.7.25"
     val seleniumVersion = "2.3.1"
